@@ -3,6 +3,7 @@ import express from 'express';
 import {router} from './routes';
 import 'express-async-errors';
 import {errorHandler} from './app/middlewares/errorHandler';
+import path from 'node:path';
 
 async function start() {
   try {
@@ -12,6 +13,7 @@ async function start() {
     const app = express();
 
     app.use(express.json());
+    app.use('/uploads', express.static(path.resolve(__dirname, '..', 'uploads')));
     app.use(router);
     app.use(errorHandler);
 

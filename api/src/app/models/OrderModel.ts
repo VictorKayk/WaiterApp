@@ -21,7 +21,7 @@ export const Order = model('Order', new Schema({
       product: {
         type: Schema.Types.ObjectId,
         required: true,
-        ref: 'product'
+        ref: 'Product'
       },
       quantity: {
         type: Number,
