@@ -4,6 +4,7 @@ import {Text} from '../Text';
 import {Close} from '../Icons/Close';
 import {Button} from '../Button';
 import {useState} from 'react';
+import {StatusBar} from 'expo-status-bar';
 
 interface TableModalProps {
   visible: boolean;
@@ -21,6 +22,8 @@ export function TableModal({ visible, onClose, onSave }: TableModalProps) {
 
   return (
     <Modal visible={visible} transparent animationType='fade'>
+      <StatusBar hidden={true} />
+
       <Overlay behavior={Platform.OS === 'android' ? 'height' : 'padding'}>
         <ModalBody>
           <Header>

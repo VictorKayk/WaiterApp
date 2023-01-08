@@ -5,15 +5,22 @@ import {Close} from '../Icons/Close';
 import {Text} from '../Text';
 import {formatCurrency} from '../../utils/formatCurrency';
 import {Button} from '../Button';
+import {StatusBar} from 'expo-status-bar';
 
 interface ProductModalProps {
   visible: boolean;
   onClose(): void;
   product: Product | null;
+  onAddToCart(product: Product): void;
 }
 
-export function ProductModal({ visible, product, onClose }: ProductModalProps) {
+export function ProductModal({ visible, product, onClose, onAddToCart }: ProductModalProps) {
   if(!product) return null;
+
+  function handleAddToCart(product: Product) {
+    onAddToCart(product);
+    onClose();
+  }
 
   return (
     <Modal
@@ -21,7 +28,9 @@ export function ProductModal({ visible, product, onClose }: ProductModalProps) {
       onRequestClose={onClose}
       animationType="slide"
       presentationStyle='pageSheet'
-    >
+    > 
+      <StatusBar hidden={true} />
+
       <Image
         source={{
           uri: 'https://imgs.search.brave.com/S997M49YPbW8m8zas3kENeYZPCdMdNTXYobIJUaFlow/rs:fit:1200:1000:1/g:ce/aHR0cHM6Ly9jZG4u/ZS1rb25vbWlzdGEu/cHQvdXBsb2Fkcy8y/MDIwLzAzL3Bpenph/LWJpbWJ5LS5qcGc'
@@ -65,7 +74,7 @@ export function ProductModal({ visible, product, onClose }: ProductModalProps) {
             <Text size={20} weight='600'>{formatCurrency(product.price)}</Text>
           </View>
 
-          <Button onPress={() => alert('oi')}>
+          <Button onPress={() => handleAddToCart(product)}>
             Adicionar ao pedido
           </Button>
         </FooterContainer>
