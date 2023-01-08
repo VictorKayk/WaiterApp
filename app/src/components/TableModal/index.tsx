@@ -14,6 +14,11 @@ interface TableModalProps {
 export function TableModal({ visible, onClose, onSave }: TableModalProps) {
   const [table, setTable] = useState('');
 
+  function handleSaveTable() {
+    setTable('');
+    onSave(table);
+  }
+
   return (
     <Modal visible={visible} transparent animationType='fade'>
       <Overlay behavior={Platform.OS === 'android' ? 'height' : 'padding'}>
@@ -31,7 +36,7 @@ export function TableModal({ visible, onClose, onSave }: TableModalProps) {
               keyboardType="number-pad"
               onChangeText={setTable}
             />
-            <Button onPress={() => onSave(table)} disabled={table.length === 0}>Salvar</Button>
+            <Button onPress={() => handleSaveTable()} disabled={table.length === 0}>Salvar</Button>
           </Form>
         </ModalBody>
       </Overlay>
