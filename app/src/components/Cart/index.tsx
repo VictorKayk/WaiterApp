@@ -1,4 +1,4 @@
-import {CartItem} from '../../types/CartItem';
+import {CartItem} from '../../types/cartItem';
 import {FlatList, TouchableOpacity, View} from 'react-native';
 import {Actions, Image, Item, ProductContainer, QuantityContainer, Summary} from './styles';
 import {Text} from '../Text';
@@ -9,15 +9,17 @@ import {Button} from '../Button';
 import {Product} from '../../types/product';
 import {useState} from 'react';
 import {OrderConfirmedModal} from '../OrderConfirmedModal';
+import {api} from '../../utils/api';
 
 interface CartProps {
   cartItems: Array<CartItem>
   onAdd(product: Product): void;
   onRemove(product: Product): void;
   onConfirmOrder(): void;
+  selectedTable: string;
 }
 
-export function Cart({ cartItems, onAdd, onRemove, onConfirmOrder }: CartProps) {
+export function Cart({ cartItems, onAdd, onRemove, onConfirmOrder, selectedTable }: CartProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -28,6 +30,21 @@ export function Cart({ cartItems, onAdd, onRemove, onConfirmOrder }: CartProps) 
   function handleConfirm() {
     onConfirmOrder();
     setIsModalOpen(false);
+  }
+
+  async function handleConfirmOrder() {
+    setIsLoading(true);
+
+    await api.post('orders', {
+      table: selectedTable,
+      products: cartItems.map((cartItem) => ({
+        quantity: cartItem.quantity,
+        product: cartItem.product._id
+      }))
+    });
+
+    setIsLoading(false);
+    setIsModalOpen(true);
   }
 
   return (
@@ -45,7 +62,7 @@ export function Cart({ cartItems, onAdd, onRemove, onConfirmOrder }: CartProps) 
               <ProductContainer>
                 <Image
                   source={{
-                    uri: 'https://imgs.search.brave.com/S997M49YPbW8m8zas3kENeYZPCdMdNTXYobIJUaFlow/rs:fit:1200:1000:1/g:ce/aHR0cHM6Ly9jZG4u/ZS1rb25vbWlzdGEu/cHQvdXBsb2Fkcy8y/MDIwLzAzL3Bpenph/LWJpbWJ5LS5qcGc'
+                    uri: `http://192.168.100.11:5000/uploads/${cartItem.product.imagePath}`
                   }}
                 />
                 <QuantityContainer>
@@ -85,7 +102,7 @@ export function Cart({ cartItems, onAdd, onRemove, onConfirmOrder }: CartProps) 
         </View>
 
         <Button
-          onPress={() => setIsModalOpen(true)}
+          onPress={handleConfirmOrder}
           disabled={cartItems.length === 0}
           isLoading={isLoading}
         >

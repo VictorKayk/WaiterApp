@@ -4,22 +4,36 @@ import {Categories} from '../components/Categories';
 import {Button} from '../components/Button';
 import {Menu} from '../components/Menu';
 import {TableModal} from '../components/TableModal';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import {Cart} from '../components/Cart';
-import {CartItem} from '../types/CartItem';
+import {CartItem} from '../types/cartItem';
 import {Product} from '../types/product';
 import {ActivityIndicator} from 'react-native';
 import {Empty} from '../components/Icons/Empty';
 import {Text} from '../components/Text';
-import {products as mockProducts} from '../mocks/products';
 import {StatusBar} from 'expo-status-bar';
+import {Category} from '../types/category';
+import {api} from '../utils/api';
 
 export function  Main() {
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isLoadingProducts, setIsLoadingProducts] = useState(false);
   const [isTableModalVisible, setIsTableModalVisible] = useState(false);
   const [selectedTable, setSelectedTable] = useState('');
   const [cartItems, setCartItems] = useState<Array<CartItem> | []>([]);
-  const [products, setProducts] = useState<Product[] | []>(mockProducts);
+  const [products, setProducts] = useState<Product[] | []>([]);
+  const [categories, setCategories] = useState<Category[] | []>([]);
+
+  useEffect(() => {
+    Promise.all([
+      api.get('categories'),
+      api.get('products'),
+    ]).then(([categoriesResponse, productsResponse]) => {
+      setProducts(productsResponse.data);
+      setCategories(categoriesResponse.data);
+      setIsLoading(false);
+    });
+  }, []);
 
   function handleSaveTable(table: string) {
     setSelectedTable(table);
@@ -76,10 +90,21 @@ export function  Main() {
     });
   }
 
+  async function handleSelectedCategory(categoryId: string) {
+    const route = !categoryId ?
+      'products' :
+      `categories/${categoryId}/products`;
+
+    setIsLoadingProducts(true);
+    const { data } = await api.get(route);
+    setProducts(data);
+    setIsLoadingProducts(false);
+  }
+
   return (
     <>
+      <StatusBar style={'dark'} backgroundColor='#fafafa' />
       <Container>
-        <StatusBar style={'dark'} backgroundColor='#fafafa' />
         <Header
           selectedTable={selectedTable}
           onCancelOrder={handleResetOrder}
@@ -88,18 +113,26 @@ export function  Main() {
         {!isLoading && (
           <>
             <CategoriesContainer>
-              <Categories />
+              <Categories categories={categories} onSelectedCategory={handleSelectedCategory}/>
             </CategoriesContainer>
 
-            {products.length > 0 ? (
-              <MenuContainer>
-                <Menu onAddToCart={handleAddToCart} products={products} />
-              </MenuContainer>
-            ) : (
+            {isLoadingProducts ? (
               <CenteredContainer>
-                <Empty />
-                <Text color='#666' style={{ marginTop: 24 }}>Nenhum produto foi encontrado!</Text>
+                <ActivityIndicator size='large' color='#D73035' />
               </CenteredContainer>
+            ) : (
+              <>
+                {products.length > 0 ? (
+                  <MenuContainer>
+                    <Menu onAddToCart={handleAddToCart} products={products} />
+                  </MenuContainer>
+                ) : (
+                  <CenteredContainer>
+                    <Empty />
+                    <Text color='#666' style={{ marginTop: 24 }}>Nenhum produto foi encontrado!</Text>
+                  </CenteredContainer>
+                )}
+              </>
             )}
           </>
         )}
@@ -123,6 +156,7 @@ export function  Main() {
               onAdd={handleAddToCart}
               onRemove={handleRemoveFromCart}
               onConfirmOrder={handleResetOrder}
+              selectedTable={selectedTable}
             />
           )}
         </FooterContainer>

@@ -1,13 +1,20 @@
-import {categories} from '../../mocks/categories';
-import {Category, Icon} from './styles';
+import { Category } from '../../types/category';
+import {CategoryContainer, Icon} from './styles';
 import {Text} from '../Text';
 import {FlatList} from 'react-native';
 import {useState} from 'react';
 
-export function Categories() {
+interface CategoriesProps {
+  categories: Array<Category>
+  onSelectedCategory(categoryId: string): Promise<void>;
+}
+
+export function Categories({ categories, onSelectedCategory }: CategoriesProps) {
   const [selectedCategoryId, setSelectedCategoryId] = useState('');
-  function handleSelectCategory(categoryId: string) {
-    setSelectedCategoryId((prev) => prev === categoryId ? '' : categoryId);
+  function handleSelectedCategory(categoryId: string) {
+    const category = selectedCategoryId === categoryId ? '' : categoryId;
+    onSelectedCategory(category);
+    setSelectedCategoryId(category);
   }
 
   return (
@@ -20,12 +27,12 @@ export function Categories() {
       renderItem={({ item: category }) => {
         const isSelected = selectedCategoryId === category._id;
         return (
-          <Category onPress={() => handleSelectCategory(category._id)}>
+          <CategoryContainer onPress={() => handleSelectedCategory(category._id)}>
             <Icon>
               <Text opacity={isSelected ? 1 : 0.5}>{category.icon}</Text>
             </Icon>
             <Text size={14} weight={'600'}  opacity={isSelected ? 1 : 0.5}>{category.name}</Text>
-          </Category>
+          </CategoryContainer>
         );
       }}
     />
