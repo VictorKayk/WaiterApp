@@ -2,15 +2,20 @@ import {Board, OrdersContainer} from './styles';
 import {Order} from '../../Types/Order';
 import {useState} from 'react';
 import {OrdersModal} from '../OrdersModal';
+import {api} from '../../utils/api';
+import {toast} from 'react-toastify';
 
 interface OrdersBoardProps {
   icon: string;
   title: string;
-  orders: Array<Order>;
+  orders: Array<Order> | [];
+  onCancelOrder(orderId: string): void;
+  onOrderStatusChange(orderId: string, status: Order['status']): void;
 }
-export function OrdersBoard({ icon, title, orders }: OrdersBoardProps) {
+export function OrdersBoard({ icon, title, orders, onCancelOrder, onOrderStatusChange }: OrdersBoardProps) {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   function handleOpenModal(order: Order) {
     setIsModalVisible(true);
@@ -22,9 +27,44 @@ export function OrdersBoard({ icon, title, orders }: OrdersBoardProps) {
     setSelectedOrder(null);
   }
 
+  async function handleCancelOrder() {
+    setIsLoading(true);
+    await api.delete(`orders/${selectedOrder?._id}`);
+    onCancelOrder(selectedOrder!._id);
+    setIsLoading(false);
+    setIsModalVisible(false);
+
+    const message = selectedOrder?.status !== 'DONE' ?
+      `O pedido da mesa ${selectedOrder?.table} foi cancelado!` :
+      `O pedido da mesa ${selectedOrder?.table} foi deletado!`;
+    toast.success(message);
+  }
+
+  async function handleOrderStatusChange() {
+    setIsLoading(true);
+
+    const status = selectedOrder?.status === 'WAITING' ? 'IN_PRODUCTION' : 'DONE';
+
+    await api.patch(`orders/${selectedOrder?._id}`, {
+      status
+    });
+
+    onOrderStatusChange(selectedOrder!._id, status);
+    setIsLoading(false);
+    setIsModalVisible(false);
+    toast.success(`O pedido da mesa ${selectedOrder?.table} teve o status alterado!`);
+  }
+
   return (
     <Board>
-      <OrdersModal visible={isModalVisible} order={selectedOrder} onClose={() => handleCloseModal()}/>
+      <OrdersModal
+        visible={isModalVisible}
+        order={selectedOrder}
+        onClose={() => handleCloseModal()}
+        onCancelOrder={handleCancelOrder}
+        isLoading={isLoading}
+        onOrderStatusChange={handleOrderStatusChange}
+      />
 
       <header>
         <span>{icon}</span>

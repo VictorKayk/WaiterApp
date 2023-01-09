@@ -7,8 +7,11 @@ interface OrdersModalProps {
   visible: boolean;
   order: Order | null;
   onClose(): void;
+  onCancelOrder(): void;
+  isLoading: boolean;
+  onOrderStatusChange(): void;
 }
-export function OrdersModal({ visible, order, onClose }: OrdersModalProps) {
+export function OrdersModal({ visible, order, onClose, onCancelOrder, isLoading, onOrderStatusChange }: OrdersModalProps) {
   if (!visible || !order) return null;
 
   const total = order.products.reduce((prev, current) => {
@@ -60,7 +63,7 @@ export function OrdersModal({ visible, order, onClose }: OrdersModalProps) {
             {order.products.map(({ _id, product, quantity }) => (
               <div className="item" key={_id}>
                 <img
-                  src={'https://imgs.search.brave.com/S997M49YPbW8m8zas3kENeYZPCdMdNTXYobIJUaFlow/rs:fit:1200:1000:1/g:ce/aHR0cHM6Ly9jZG4u/ZS1rb25vbWlzdGEu/cHQvdXBsb2Fkcy8y/MDIwLzAzL3Bpenph/LWJpbWJ5LS5qcGc'}
+                  src={`http://192.168.100.11:5000/uploads/${product.imagePath}`}
                   alt={product.name}
                   width="58"
                   height="28.51"
@@ -83,13 +86,21 @@ export function OrdersModal({ visible, order, onClose }: OrdersModalProps) {
         </OrderDetails>
 
         <Actions>
-          <button type="button" className="primary">
-            <span>👩‍🍳</span>
-            <strong>Iniciar preparação</strong>
-          </button>
+          {order.status !== 'DONE' && (
+            <button type="button" className="primary" disabled={isLoading} onClick={onOrderStatusChange}>
+              <span>
+                {order.status === 'WAITING' && '👩‍🍳'}
+                {order.status === 'IN_PRODUCTION' && '☑️'}
+              </span>
+              <strong>
+                {order.status === 'WAITING' && 'Iniciar preparação'}
+                {order.status === 'IN_PRODUCTION' && 'Concluir pedido'}
+              </strong>
+            </button>
+          )}
 
-          <button type="button" className="secondary">
-            Cancelar pedido
+          <button type="button" className="secondary" onClick={onCancelOrder} disabled={isLoading}>
+            {order.status !== 'DONE' ? 'Cancelar pedido' : 'Deletar pedido'}
           </button>
         </Actions>
       </ModalBody>

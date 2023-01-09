@@ -3,7 +3,6 @@ import styled from 'styled-components';
 export const Board = styled.div`
   display: flex;
   align-items: center;
-  justify-content: center;
   flex-direction: column;
   gap: 24px;
   flex: 1;
