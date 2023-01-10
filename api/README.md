@@ -17,6 +17,7 @@
 - MongoDB
 - Mongoose
 - WebSockets
+- Docker
 
 ## 🎲 Modelagem do banco de dados
 
@@ -36,5 +37,14 @@
   - Criar Pedidos
   - Trocar Status do Pedido (Esperando, Em-Produção e Feito/Entregue)
   - Deletar/Cancelar um Pedido
+
+## 📦 Docker
+
+Abra um terminal e rode o comando:
+
+```sh
+# Inicializa um container chamado "mongodb" rodando Mongodb na porta 27017 (porta padrão do mongodb)
+docker run --name mongo -p 27017:27017 -d mongo
+```
 
 ---
