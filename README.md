@@ -14,7 +14,7 @@
 
 Waiter app é uma aplicação desenvolvida para ajudar no fluxo de pedidos de um restaurante. Por intermédio dele, os garçons e a cozinha estão mais conectados do que nunca.
 
-O projeto possui uma aplicação mobile e web que se complementam, o app mobile serve como menu para que os garçons possam criar pedidos dos clientes com na mesa que eles ocupam. A versão web é um dashboard todo que mostra o estado do pedido, para controle da cozinha.
+O projeto possui uma aplicação mobile e web que se complementam, o app mobile serve como menu para que os garçons possam criar pedidos dos clientes com na mesa que eles ocupam. A versão web é um dashboard todo que mostra o estado do pedido, para controle da cozinha. E a api serve como o centralizador de tudo, permitindo com que os dados sejam enviados de uma ponta a outra automaticamente.
 
 - [Api](https://github.com/VictorKayk/WaiterApp/tree/main/api)
 - [Frontend](https://github.com/VictorKayk/WaiterApp/tree/main/frontend)
