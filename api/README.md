@@ -43,7 +43,7 @@
 Abra um terminal e rode o comando:
 
 ```sh
-# Inicializa um container chamado "mongodb" rodando Mongodb na porta 27017 (porta padrão do mongodb)
+# Inicializa um container chamado "mongo" rodando Mongodb na porta 27017 (porta padrão do mongodb)
 docker run --name mongo -p 27017:27017 -d mongo
 ```
 
