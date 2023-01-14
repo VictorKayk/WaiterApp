@@ -26,28 +26,58 @@ O projeto possui uma aplicação mobile e web que se complementam, o app mobile 
 
 ## 🤔 Como usar?
 
+   
+   1. Clone esse repositório:
    ```
-   - Clone esse repositório:
    $ git clone https://github.com/VictorKayk/WaiterApp.git
-   - Entre no diretório:
+   ```
+   
+   2. Entre no diretório:
+   ```
    $ cd WaiterApp
+   ```
    
-   - Inicie a api (nessesario um banco mongo):
+   3. Inicie a api (nessesario um banco mongo):
+   ```
    $ cd api
-   - Instale as dependências:
-   $ yarn install
-   $ yarn dev
+   ```
    
-   - Inicie o frontend:
+   - Instale as dependências:
+   ```
+   $ yarn install
+   ```
+   - Inicie a api em modo dev
+   ```
+   $ yarn dev
+   ```
+   
+   4. Inicie o frontend:
+   ```
    $ cd frontend
-   - Instale as dependências:
-   $ yarn install
-   $ yarn dev
+   ```
    
-   - Inicie o app:
-   $ cd app
    - Instale as dependências:
+   ```
    $ yarn install
+   ```
+   
+   - Inicie a aplicação em modo dev
+   ```
+   $ yarn dev
+   ```
+   
+   6. Inicie o app:
+   ```
+   $ cd app
+   ```
+   
+   - Instale as dependências:
+   ```
+   $ yarn install
+   ```
+   
+   - Inicie a aplicação mobile
+   ```
    $ yarn start
    ```
 
